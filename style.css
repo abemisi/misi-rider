@@ -119,7 +119,7 @@ body {
     background-position:center;
     background-size:contain;
 
-    z-index:20;
+    z-index:20;transform: translateX(-50%) rotate(180deg);
 }
 
 #rider .helmet,
