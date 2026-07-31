@@ -110,15 +110,29 @@ body {
 ==================== */
 
 #rider{
+    position:absolute;
+
     width:70px;
     height:110px;
 
-    background:url("assets/rider/rider-yellow.png");
+    background-image:url("assets/rider/rider-yellow.png");
     background-size:contain;
     background-repeat:no-repeat;
     background-position:center;
+
+    transform:translateX(-50%);
+    z-index:20;
 }
-.wheel {
+
+#rider .helmet,
+#rider .body,
+#rider .handle,
+#rider .bikeBody,
+#rider .wheel{
+    display:none;
+}
+.wheel{
+}
   position: absolute;
   left: 15px;
   width: 14px;
