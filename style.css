@@ -109,17 +109,15 @@ body {
    MOTOR TOP VIEW
 ==================== */
 
-#rider {
-  position: absolute;
-  width: 44px;
-  height: 86px;
-  bottom: 75px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 15;
-  transition: left .11s ease-out;
-}
+#rider{
+    width:70px;
+    height:110px;
 
+    background:url("assets/rider/rider-yellow.png");
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
+}
 .wheel {
   position: absolute;
   left: 15px;
@@ -221,22 +219,33 @@ body {
   border: 3px solid rgba(0,0,0,.35);
 }
 
-.carRed {
-  background: #e53935;
+.carRed{
+    background-image:url("assets/cars/car-red.png");
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
 }
 
-.carBlue {
-  background: #2684d9;
+.carBlue{
+    background-image:url("assets/cars/car-Blue.png");
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
 }
 
-.carYellow {
-  background: #f6c928;
+.carYellow{
+    background-image:url("assets/cars/car-yellow.png");
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
 }
 
 .carWhite {
-  background: #e8e8e8;
+  background-image:url("assets/cars/car-white.png");
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
 }
-
 /* lampu */
 
 .lightL,
