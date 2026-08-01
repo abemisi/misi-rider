@@ -1,4 +1,7 @@
 const bgMusic = document.getElementById("bgMusic");
+
+bgMusic.preload = "auto";
+
 const road = document.getElementById("road");
 const rider = document.getElementById("rider");
 const scoreText = document.getElementById("score");
@@ -166,8 +169,11 @@ function collision(a, b) {
 
 function startGame() {
 
-  bgMusic.volume = 0.3;
-  bgMusic.play();
+bgMusic.volume = 0.3;
+
+bgMusic.play().catch(err => {
+    console.log("Audio gagal dimainkan:", err);
+});
 
   if (animationId) {
     cancelAnimationFrame(animationId);
