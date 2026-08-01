@@ -1,6 +1,6 @@
+const bgMusic = document.getElementById("bgMusic");
 const road = document.getElementById("road");
 const rider = document.getElementById("rider");
-
 const scoreText = document.getElementById("score");
 const highScoreText = document.getElementById("highScore");
 const finalScoreText = document.getElementById("finalScore");
@@ -166,6 +166,9 @@ function collision(a, b) {
 
 function startGame() {
 
+  bgMusic.volume = 0.3;
+  bgMusic.play();
+
   if (animationId) {
     cancelAnimationFrame(animationId);
   }
@@ -310,6 +313,9 @@ highScoreText.textContent=0;
 ========================= */
 
 function endGame() {
+
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
 
   playing = false;
 
