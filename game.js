@@ -169,9 +169,10 @@ function collision(a, b) {
 
 function startGame() {
 
-bgMusic.volume = 0.3;
-
-bgMusic.play().catch(err => {
+if (bgMusic.paused) {
+    bgMusic.currentTime = 0;
+    bgMusic.play().catch(console.error);
+}.catch(err => {
     console.log("Audio gagal dimainkan:", err);
 });
 
@@ -320,8 +321,10 @@ highScoreText.textContent=0;
 
 function endGame() {
 
-  bgMusic.pause();
-  bgMusic.currentTime = 0;
+ if (!bgMusic.paused) {
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+}
 
   playing = false;
 
