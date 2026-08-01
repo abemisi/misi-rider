@@ -114,8 +114,8 @@ body{
     height:110px;
 
     transform:translateX(-50%);
-
-background-image:url("assets/rider/rider-yellow-v2.png");
+    
+background-image: url("assets/rider/rider-yellow-transparent.png");
     background-repeat:no-repeat;
     background-position:center;
     background-size:100% 100%;
