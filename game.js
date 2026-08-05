@@ -174,6 +174,13 @@ if (bgMusic.paused) {
     bgMusic.play();
 }
 
+  const engineSound = new Audio("assets/audio/engine_idle.wav");
+
+engineSound.loop = true;
+engineSound.volume = 0.3;
+engineSound.preload = "auto";
+}
+  
   if (animationId) {
     cancelAnimationFrame(animationId);
   }
