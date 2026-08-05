@@ -1,5 +1,8 @@
 const bgMusic = document.getElementById("bgMusic");
 const engineSound = document.getElementById("engineSound");
+const crashSound = document.getElementById("crashSound");
+
+crashSound.volume = 0.8;
 
 bgMusic.preload = "auto";
 engineSound.preload = "auto";
@@ -331,6 +334,15 @@ highScoreText.textContent=0;
 ========================= */
 
 function endGame() {
+  
+  crashSound.currentTime = 0;
+crashSound.play();
+
+engineSound.pause();
+engineSound.currentTime = 0;
+
+bgMusic.pause();
+bgMusic.currentTime = 0;
 
  if (!bgMusic.paused) {
     bgMusic.pause();
