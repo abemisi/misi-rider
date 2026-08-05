@@ -1,5 +1,9 @@
 const bgMusic = document.getElementById("bgMusic");
 const engineSound = document.getElementById("engineSound");
+
+bgMusic.preload = "auto";
+engineSound.preload = "auto";
+
 engineSound.volume = 0.3;
 bgMusic.preload = "auto";
 
@@ -170,53 +174,50 @@ function collision(a, b) {
 
 function startGame() {
 
-if (bgMusic.paused) {
-    bgMusic.currentTime = 0;
-    bgMusic.play();
+    // Main muzik latar
+    if (bgMusic.paused) {
+        bgMusic.currentTime = 0;
+        bgMusic.play();
+    }
+
+    // Main bunyi enjin
+    if (engineSound.paused) {
+        engineSound.currentTime = 0;
+        engineSound.play();
+    }
+
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+    }
+
+    cars.forEach(car => car.remove());
+    cars = [];
+
+    score = 0;
+    speed = 5;
+    spawnTimer = 0;
+
+    lane = 1;
+
+    updateRider();
+
+    scoreText.textContent = "0";
+
+    startScreen.classList.add("hidden");
+    gameOverScreen.classList.add("hidden");
+
+    playing = true;
+    paused = false;
+
+    pauseText.classList.add("hidden");
+    pauseBtn.textContent = "⏸";
+
+    lastTime = performance.now();
+
+    createCar();
+
+    animationId = requestAnimationFrame(gameLoop);
 }
-  
-  const engineSound = new Audio("assets/audio/engine_idle.wav");
-  if (engineSound.paused) {
-    engineSound.currentTime = 0;
-    engineSound.play();
-}
-
-engineSound.loop = true;
-engineSound.volume = 0.3;
-engineSound.preload = "auto";
-}
-  
-  if (animationId) {
-    cancelAnimationFrame(animationId);
-  }
-
-  cars.forEach(car => car.remove());
-  cars = [];
-
-  score = 0;
-  speed = 5;
-  spawnTimer = 0;
-
-  lane = 1;
-
-  updateRider();
-
-  scoreText.textContent = "0";
-
-  startScreen.classList.add("hidden");
-  gameOverScreen.classList.add("hidden");
-
-  playing = true;paused = false;
-pauseText.classList.add("hidden");
-pauseBtn.textContent = "⏸";
-
-  lastTime = performance.now();
-
-  createCar();
-
-  animationId = requestAnimationFrame(gameLoop);
-}
-
 
 /* =========================
    GAME LOOP
