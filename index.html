@@ -1,63 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Misi Rider</title>
 
-    <link rel="stylesheet" href="style.css">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Misi Rider</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
+
 <div id="game">
-  <div id="road">
-    <div class="edge leftEdge"></div>
-    <div class="edge rightEdge"></div>
 
-    <div id="lines"></div>
+<div id="road">
 
-    <div id="hud"><button id="pauseBtn">⏸</button><div id="pauseText" class="hidden">
-  MISI PAUSE
+<div class="edge leftEdge"></div>
+<div class="edge rightEdge"></div>
+
+<div id="lines"></div>
+
+<!-- =========================
+     HUD
+========================= -->
+
+<div id="hud">
+
+<button id="pauseBtn">⏸</button>
+
+<div class="hudBox">
+⭐ <span id="score">0</span>
 </div>
-      <div>⭐ <span id="score">0</span></div>
-      <div>🏆 <span id="highScore">0</span></div>
-    </div>
+
+<div class="hudBox">
+🏆 <span id="highScore">0</span>
+</div>
+
+<div class="hudBox">
+❤️ <span id="lives">3</span>
+</div>
+
+<div class="hudBox">
+🪙 <span id="coinCount">0</span>
+</div>
+
+</div>
+
+<!-- =========================
+     FUEL
+========================= -->
+
+<div id="fuelContainer">
+
+<div id="fuelFill"></div>
+
+</div>
+
+<div id="pauseText" class="hidden">
+
+MISI PAUSE
+
+</div>
 
 <div id="rider"></div>
+<!-- =========================
+     START SCREEN
+========================= -->
 
-    <div id="startScreen" class="screen">
-      <div class="logo">🏁</div>
-      <h1>MISI RIDER</h1>
-      <h3>HANTAR. ELAK. SELAMAT.</h3>
-      <p>
-        Elakkan kenderaan dan<br>
-        kumpul skor sebanyak mungkin.
-      </p>
-      <button id="startBtn">MULA MISI</button>
-    </div>
+<div id="startScreen" class="screen">
 
-    <div id="gameOver" class="screen hidden">
-      <div class="crash">💥</div>
-      <h1>ALAMAK!</h1>
-      <p>Rider terlanggar kenderaan.</p>
-      <h2>Skor: <span id="finalScore">0</span></h2>
-      <button id="restartBtn">MAIN LAGI</button>
-    </div>
+<div class="logo">🏁</div>
 
-    <div id="controls">
-    <button id="leftBtn">◀</button>
-    <button id="rightBtn">▶</button>
+<h1>MISI RIDER</h1>
+
+<h3>HANTAR • ELAK • SELAMAT</h3>
+
+<p>
+
+Elakkan kenderaan.<br>
+Kutip coin.<br>
+Jaga nyawa dan fuel.
+
+</p>
+
+<button id="startBtn">
+
+MULA MISI
+
+</button>
+
+</div>
+
+
+<!-- =========================
+     GAME OVER
+========================= -->
+
+<div id="gameOver" class="screen hidden">
+
+<div class="crash">💥</div>
+
+<h1>ALAMAK RIDER!</h1>
+
+<p>
+
+Anda terlanggar kenderaan.
+
+</p>
+
+<h2>
+
+Skor :
+<span id="finalScore">0</span>
+
+</h2>
+
+<button id="restartBtn">
+
+MAIN SEMULA
+
+</button>
+
+</div>
+
+
+<!-- =========================
+     CONTROL
+========================= -->
+
+<div id="controls">
+
+<button id="leftBtn">
+
+◀
+
+</button>
+
+<button id="rightBtn">
+
+▶
+
+</button>
+
 </div>
 
 </div>
+
 </div>
+
+
+<!-- =========================
+     AUDIO
+========================= -->
 
 <audio id="bgMusic" loop>
-   <source src="assets/sounds/create-an-upbeat-energetic-background_080126.mp3" type="audio/mpeg">
+<source src="assets/sounds/create-an-upbeat-energetic-background_080126.mp3" type="audio/mpeg">
 </audio>
-    <audio id="engineSound" src="assets/sounds/engine_idle.wav" loop></audio>
-    <audio id="crashSound">
-    <source src="assets/sounds/clash-car.flac" type="audio/flac">
+
+<audio id="engineSound" loop>
+<source src="assets/sounds/engine_idle.wav" type="audio/wav">
+</audio>
+
+<audio id="crashSound">
+<source src="assets/sounds/clash-car.flac" type="audio/flac">
+</audio>
+
+<audio id="coinSound">
+<source src="assets/sounds/coin.wav" type="audio/wav">
 </audio>
 
 <script src="game.js"></script>
