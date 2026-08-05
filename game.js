@@ -171,10 +171,8 @@ function startGame() {
 
 if (bgMusic.paused) {
     bgMusic.currentTime = 0;
-    bgMusic.play().catch(console.error);
-}.catch(err => {
-    console.log("Audio gagal dimainkan:", err);
-});
+    bgMusic.play();
+}
 
   if (animationId) {
     cancelAnimationFrame(animationId);
