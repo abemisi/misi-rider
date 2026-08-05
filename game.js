@@ -176,7 +176,6 @@ if (bgMusic.paused) {
 }
   
   const engineSound = new Audio("assets/audio/engine_idle.wav");
-  
   if (engineSound.paused) {
     engineSound.currentTime = 0;
     engineSound.play();
