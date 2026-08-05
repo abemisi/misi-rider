@@ -175,11 +175,12 @@ if (bgMusic.paused) {
     bgMusic.play();
 }
   
-if (engineSound.paused) {
+  const engineSound = new Audio("assets/audio/engine_idle.wav");
+  
+  if (engineSound.paused) {
     engineSound.currentTime = 0;
     engineSound.play();
 }
-  const engineSound = new Audio("assets/audio/engine_idle.wav");
 
 engineSound.loop = true;
 engineSound.volume = 0.3;
