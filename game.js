@@ -174,7 +174,11 @@ if (bgMusic.paused) {
     bgMusic.currentTime = 0;
     bgMusic.play();
 }
-
+  
+if (engineSound.paused) {
+    engineSound.currentTime = 0;
+    engineSound.play();
+}
   const engineSound = new Audio("assets/audio/engine_idle.wav");
 
 engineSound.loop = true;
