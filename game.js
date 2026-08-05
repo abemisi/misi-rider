@@ -1,5 +1,6 @@
 const bgMusic = document.getElementById("bgMusic");
-
+const engineSound = document.getElementById("engineSound");
+engineSound.volume = 0.3;
 bgMusic.preload = "auto";
 
 const road = document.getElementById("road");
