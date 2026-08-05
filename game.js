@@ -1,6 +1,6 @@
 /* =====================================================
    MISI RIDER
-   VERSION 2.0
+   VERSION 2.1
 ===================================================== */
 
 
@@ -11,6 +11,7 @@
 const bgMusic = document.getElementById("bgMusic");
 const engineSound = document.getElementById("engineSound");
 const crashSound = document.getElementById("crashSound");
+const coinSound = document.getElementById("coinSound");
 
 bgMusic.preload = "auto";
 
@@ -19,6 +20,10 @@ engineSound.loop = true;
 engineSound.volume = 0.25;
 
 crashSound.volume = 0.8;
+
+if (coinSound) {
+    coinSound.volume = 0.6;
+}
 
 
 /* =========================
@@ -56,13 +61,27 @@ let score = 0;
 let speed = 5;
 
 let cars = [];
+let coins = [];
+
 let lines = [];
 
 let lane = 1;
 
 let animationId = null;
 let lastTime = 0;
+
 let spawnTimer = 0;
+
+let coinTimer = 0;
+let nextCoinTime = 2000 + Math.random() * 3000;
+
+
+/* =========================
+   PLAYER
+========================= */
+
+let lives = 3;
+let fuel = 100;
 
 
 /* =========================
@@ -70,9 +89,11 @@ let spawnTimer = 0;
 ========================= */
 
 const lanePositions = [
+
     20,
     50,
     80
+
 ];
 
 
@@ -100,7 +121,6 @@ function createRoadLines() {
 
         lines.push(line1);
 
-
         const line2 = document.createElement("div");
         line2.className = "roadLine line2";
         line2.dataset.y = y;
@@ -112,7 +132,6 @@ function createRoadLines() {
     }
 
 }
-
 
 function updateRoadLines(delta) {
 
@@ -146,7 +165,6 @@ function updateRider() {
 
 }
 
-
 function moveLeft() {
 
     if (!playing) return;
@@ -161,7 +179,6 @@ function moveLeft() {
 
 }
 
-
 function moveRight() {
 
     if (!playing) return;
@@ -175,6 +192,8 @@ function moveRight() {
     }
 
 }
+
+
 /* =====================================================
    CREATE CAR
 ===================================================== */
@@ -184,10 +203,12 @@ function createCar() {
     const car = document.createElement("div");
 
     const colours = [
+
         "carRed",
         "carBlue",
         "carYellow",
         "carWhite"
+
     ];
 
     car.className =
@@ -210,6 +231,29 @@ function createCar() {
 
 
 /* =====================================================
+   CREATE COIN
+===================================================== */
+
+function createCoin() {
+
+    const coin = document.createElement("div");
+
+    coin.className = "coin";
+
+    const laneCoin = Math.floor(Math.random() * 3);
+
+    coin.dataset.lane = laneCoin;
+    coin.dataset.y = -80;
+
+    coin.style.left = lanePositions[laneCoin] + "%";
+    coin.style.transform = "translateX(-50%)";
+
+    road.appendChild(coin);
+
+    coins.push(coin);
+
+}
+/* =====================================================
    COLLISION
 ===================================================== */
 
@@ -228,13 +272,14 @@ function collision(a, b) {
     );
 
 }
+
+
 /* =====================================================
    START GAME
 ===================================================== */
 
 function startGame() {
 
-    // Reset game
     if (animationId) {
         cancelAnimationFrame(animationId);
     }
@@ -242,9 +287,19 @@ function startGame() {
     cars.forEach(car => car.remove());
     cars = [];
 
+    coins.forEach(coin => coin.remove());
+    coins = [];
+
     score = 0;
     speed = 5;
+
+    lives = 3;
+    fuel = 100;
+
     spawnTimer = 0;
+    coinTimer = 0;
+    nextCoinTime = 2000 + Math.random() * 3000;
+
     lane = 1;
 
     updateRider();
@@ -260,7 +315,6 @@ function startGame() {
     pauseBtn.textContent = "⏸";
     pauseText.classList.add("hidden");
 
-    // Audio
     bgMusic.currentTime = 0;
     bgMusic.play().catch(() => {});
 
@@ -272,6 +326,7 @@ function startGame() {
     createCar();
 
     animationId = requestAnimationFrame(gameLoop);
+
 }
 
 
@@ -308,9 +363,11 @@ function endGame() {
         );
 
         highScoreText.textContent = highScore;
+
     }
 
     gameOverScreen.classList.remove("hidden");
+
 }
 
 
@@ -331,6 +388,16 @@ function gameLoop(time) {
     updateRoadLines(delta);
 
     spawnTimer += delta;
+    coinTimer += delta;
+
+    fuel -= 0.01;
+
+    if (fuel <= 0) {
+
+        endGame();
+        return;
+
+    }
 
     if (spawnTimer >= 1200) {
 
@@ -339,6 +406,19 @@ function gameLoop(time) {
         spawnTimer = 0;
 
     }
+
+    if (coinTimer >= nextCoinTime) {
+
+        createCoin();
+
+        coinTimer = 0;
+
+        nextCoinTime = 2000 + Math.random() * 3000;
+
+    }
+       /* =========================
+       CAR
+    ========================= */
 
     for (let i = cars.length - 1; i >= 0; i--) {
 
@@ -353,8 +433,19 @@ function gameLoop(time) {
 
         if (collision(rider, car)) {
 
-            endGame();
-            return;
+            car.remove();
+            cars.splice(i, 1);
+
+            lives--;
+
+            if (lives <= 0) {
+
+                endGame();
+                return;
+
+            }
+
+            continue;
 
         }
 
@@ -369,6 +460,55 @@ function gameLoop(time) {
             scoreText.textContent = score;
 
             speed = Math.min(10, 5 + score / 250);
+
+        }
+
+    }
+
+
+    /* =========================
+       COIN
+    ========================= */
+
+    for (let i = coins.length - 1; i >= 0; i--) {
+
+        const coin = coins[i];
+
+        let y = Number(coin.dataset.y);
+
+        y += speed * (delta / 16);
+
+        coin.dataset.y = y;
+        coin.style.top = y + "px";
+
+        if (collision(rider, coin)) {
+
+            score += 10;
+
+            fuel = Math.min(100, fuel + 10);
+
+            scoreText.textContent = score;
+
+            if (coinSound) {
+
+                coinSound.currentTime = 0;
+                coinSound.play().catch(() => {});
+
+            }
+
+            coin.remove();
+
+            coins.splice(i, 1);
+
+            continue;
+
+        }
+
+        if (y > road.clientHeight + 80) {
+
+            coin.remove();
+
+            coins.splice(i, 1);
 
         }
 
@@ -401,7 +541,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 
-// Mobile Button
+// Mobile
 leftBtn.addEventListener("pointerdown", moveLeft);
 rightBtn.addEventListener("pointerdown", moveRight);
 
@@ -426,6 +566,9 @@ pauseBtn.addEventListener("click", () => {
         pauseBtn.textContent = "▶";
         pauseText.classList.remove("hidden");
 
+        bgMusic.pause();
+        engineSound.pause();
+
     } else {
 
         paused = false;
@@ -433,6 +576,9 @@ pauseBtn.addEventListener("click", () => {
 
         pauseBtn.textContent = "⏸";
         pauseText.classList.add("hidden");
+
+        bgMusic.play().catch(() => {});
+        engineSound.play().catch(() => {});
 
         lastTime = performance.now();
 
