@@ -498,12 +498,14 @@ function gameLoop(time) {
 
         if (collision(rider, coin)) {
 
-            score += 10;
+    score += 10;
+    totalCoins++;
 
-            fuel = Math.min(100, fuel + 10);
-
-            scoreText.textContent = score;
-
+    fuel = Math.min(100, fuel + 10);
+           
+    scoreText.textContent = score;
+    coinCount.textContent = totalCoins;
+           
             if (coinSound) {
 
                 coinSound.currentTime = 0;
