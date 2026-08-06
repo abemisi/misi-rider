@@ -596,3 +596,8 @@ pauseBtn.addEventListener("click", () => {
 
 createRoadLines();
 updateRider();
+function updateLives(){
+
+    livesText.textContent = "❤️".repeat(lives);
+
+}
