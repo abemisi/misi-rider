@@ -438,7 +438,9 @@ function gameLoop(time) {
             cars.splice(i, 1);
 
             lives--;
-
+           
+            updateLives();
+           
             if (lives <= 0) {
 
                 endGame();
