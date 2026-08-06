@@ -498,8 +498,12 @@ function gameLoop(time) {
 
         if (collision(rider, coin)) {
 
+         console.log("MASUK COLLISION COIN");
+
     score += 10;
     totalCoins++;
+
+     console.log(totalCoins);      
 
     fuel = Math.min(100, fuel + 10);
            
