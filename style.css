@@ -577,3 +577,9 @@ body{
     display:none;
 
 }
+#lives{
+    color:red;
+    font-size:28px;
+    font-weight:bold;
+    margin-top:8px;
+}
