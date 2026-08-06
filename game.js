@@ -294,7 +294,7 @@ function startGame() {
     score = 0;
     speed = 5;
 
-    lives = 3;
+    lives = 3;updateLives();
     fuel = 100;
 
     spawnTimer = 0;
