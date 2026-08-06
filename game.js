@@ -12,6 +12,7 @@ const bgMusic = document.getElementById("bgMusic");
 const engineSound = document.getElementById("engineSound");
 const crashSound = document.getElementById("crashSound");
 const coinSound = document.getElementById("coinSound");
+const coinCount = document.getElementById("coinCount");
 
 bgMusic.preload = "auto";
 
