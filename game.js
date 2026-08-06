@@ -247,8 +247,11 @@ function createCoin() {
     coin.dataset.lane = laneCoin;
     coin.dataset.y = -80;
 
-    coin.style.left = lanePositions[laneCoin] + "%";
-    coin.style.transform = "translateX(-50%)";
+   coin.style.left = "50%";
+coin.style.top = "0px";
+coin.style.transform = "translateX(-50%)";
+
+console.log("Coin muncul");
 
     road.appendChild(coin);
 
