@@ -166,6 +166,7 @@ function updateRoadLines(delta) {
 function updateRider() {
 
     rider.style.left = lanePositions[lane] + "%";
+    rider.style.transform = "translateX(-50%)";
 
 }
 
