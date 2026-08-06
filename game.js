@@ -255,6 +255,8 @@ console.log("Coin muncul");
 
     road.appendChild(coin);
 
+   console.log("Coin dicipta");
+
     coins.push(coin);
 
 }
