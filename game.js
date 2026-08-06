@@ -48,6 +48,7 @@ const rightBtn = document.getElementById("rightBtn");
 
 const pauseBtn = document.getElementById("pauseBtn");
 const pauseText = document.getElementById("pauseText");
+const livesText = document.getElementById("lives");
 
 
 /* =========================
