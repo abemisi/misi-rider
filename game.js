@@ -65,6 +65,8 @@ let speed = 5;
 let cars = [];
 let coins = [];
 
+let totalCoins = 0;
+
 let lines = [];
 
 let lane = 1;
@@ -297,8 +299,12 @@ function startGame() {
     coins.forEach(coin => coin.remove());
     coins = [];
 
-    score = 0;
-    speed = 5;
+   score = 0;
+   totalCoins = 0;
+   speed = 5;
+
+   scoreText.textContent = score;
+   coinCount.textContent = totalCoins;
 
     lives = 3;updateLives();
     fuel = 100;
