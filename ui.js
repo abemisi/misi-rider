@@ -1,122 +1,122 @@
 /* =====================================================
+   MISI RIDER V3.1
    UI.JS
-   Version 3.1
 ===================================================== */
 
-/* =========================
-   GAME AREA
-========================= */
+/* =====================================================
+   GAME OBJECT
+===================================================== */
 
-const road = document.getElementById("road");
-const rider = document.getElementById("rider");
+const Game = {
+
+    /* ---------- ELEMENT ---------- */
+
+    ui: {
+
+        road: document.getElementById("road"),
+        rider: document.getElementById("rider"),
+
+        score: document.getElementById("score"),
+        highScore: document.getElementById("highScore"),
+        lives: document.getElementById("lives"),
+        coins: document.getElementById("coinCount"),
+
+        pauseBtn: document.getElementById("pauseBtn"),
+
+        startScreen: document.getElementById("startScreen"),
+        gameOver: document.getElementById("gameOver"),
+
+        startBtn: document.getElementById("startBtn"),
+        restartBtn: document.getElementById("restartBtn"),
+
+        leftBtn: document.getElementById("leftBtn"),
+        rightBtn: document.getElementById("rightBtn")
+
+    },
+
+    /* ---------- AUDIO ---------- */
+
+    audio: {
+
+        bgMusic: document.getElementById("bgMusic"),
+        engine: document.getElementById("engineSound"),
+        crash: document.getElementById("crashSound"),
+        coin: document.getElementById("coinSound")
+
+    },
+
+    /* ---------- GAME DATA ---------- */
+
+    score: 0,
+
+    highScore: 0,
+
+    coins: 0,
+
+    lives: 3,
+
+    level: 1,
+
+    speed: 6,
+
+    playing: false,
+
+    paused: false,
+
+    lane: 1,
+
+    lanePositions: [
+
+        20,
+        50,
+        80
+
+    ],
+
+    cars: [],
+
+    coinsList: [],
+
+    buildings: [],
+
+    animationId: null
+
+};
 
 
-/* =========================
+/* =====================================================
    HUD
-========================= */
+===================================================== */
 
-const scoreText = document.getElementById("score");
-const highScoreText = document.getElementById("highScore");
-const livesText = document.getElementById("lives");
-const coinText = document.getElementById("coinCount");
+function updateHUD(){
 
+    Game.ui.score.textContent = Game.score;
 
-/* =========================
-   SCREEN
-========================= */
+    Game.ui.highScore.textContent = Game.highScore;
 
-const startScreen = document.getElementById("startScreen");
-const gameOverScreen = document.getElementById("gameOver");
+    Game.ui.coins.textContent = Game.coins;
 
-
-/* =========================
-   BUTTON
-========================= */
-
-const startBtn = document.getElementById("startBtn");
-const restartBtn = document.getElementById("restartBtn");
-
-const leftBtn = document.getElementById("leftBtn");
-const rightBtn = document.getElementById("rightBtn");
-
-const pauseBtn = document.getElementById("pauseBtn");
-const pauseText = document.getElementById("pauseText");
-
-
-/* =========================
-   GAME OVER
-========================= */
-
-const finalScoreText = document.getElementById("finalScore");
-
-
-/* =========================
-   AUDIO
-========================= */
-
-const bgMusic = document.getElementById("bgMusic");
-const engineSound = document.getElementById("engineSound");
-const crashSound = document.getElementById("crashSound");
-const coinSound = document.getElementById("coinSound");
-
-
-/* =========================
-   AUDIO SETTING
-========================= */
-
-if(bgMusic){
-
-    bgMusic.preload="auto";
-    bgMusic.loop=true;
-    bgMusic.volume=0.35;
-
-}
-
-if(engineSound){
-
-    engineSound.preload="auto";
-    engineSound.loop=true;
-    engineSound.volume=0.25;
-
-}
-
-if(crashSound){
-
-    crashSound.volume=0.80;
-
-}
-
-if(coinSound){
-
-    coinSound.volume=0.60;
+    Game.ui.lives.textContent = Game.lives;
 
 }
 
 
-/* =========================
-   HUD UPDATE
-========================= */
+/* =====================================================
+   RESET
+===================================================== */
 
-function updateScore(score){
+function resetGame(){
 
-    scoreText.textContent=score;
+    Game.score = 0;
 
-}
+    Game.coins = 0;
 
-function updateHighScore(score){
+    Game.lives = 3;
 
-    highScoreText.textContent=score;
+    Game.level = 1;
 
-}
+    Game.speed = 6;
 
-function updateLives(lives){
-
-    livesText.textContent=lives;
-
-}
-
-function updateCoins(totalCoins){
-
-    coinText.textContent=totalCoins;
+    updateHUD();
 
 }
