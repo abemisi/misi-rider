@@ -11,6 +11,12 @@ Game.lastTime = 0;
 Game.carTimer = 0;
 Game.carSpawnDelay = 1200;
 
+Game.coinTimer = 0;
+Game.coinSpawnDelay = 1800;
+
+Game.buildingTimer = 0;
+Game.buildingSpawnDelay = 2500;
+
 
 /* =====================================================
    START GAME
@@ -26,6 +32,7 @@ function startGame(){
     resetRider();
     clearCars();
     clearCoins();
+    clearBuildings();
 
     Game.lastTime = performance.now();
 
@@ -57,6 +64,7 @@ function gameLoop(time){
 
     updateCars(delta);
     updateCoins(delta);
+    updateBuildings(delta);
 
     /* -----------------------------
        Spawn Kereta
@@ -79,6 +87,16 @@ if(Game.coinTimer >= Game.coinSpawnDelay){
     createCoin();
 
     Game.coinTimer = 0;
+
+}
+
+   Game.buildingTimer += delta;
+
+if(Game.buildingTimer >= Game.buildingSpawnDelay){
+
+    createBuilding();
+
+    Game.buildingTimer = 0;
 
 }
     requestAnimationFrame(gameLoop);
