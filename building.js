@@ -7,7 +7,7 @@ const buildingImages = [
 
     "assets/buildings/Cafe.png",
     "assets/buildings/Restoran.png",
-    "assets/buildings/Petrol-Station.png"
+    "assets/buildings/petrol-station.png"
 
 ];
 
