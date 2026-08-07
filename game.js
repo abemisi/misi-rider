@@ -1,6 +1,6 @@
 /* =====================================================
    MISI RIDER
-   VERSION 2.1
+   VERSION 3.0
 ===================================================== */
 
 
@@ -12,7 +12,81 @@ const bgMusic = document.getElementById("bgMusic");
 const engineSound = document.getElementById("engineSound");
 const crashSound = document.getElementById("crashSound");
 const coinSound = document.getElementById("coinSound");
+
+
+/* =========================
+   ELEMENT
+========================= */
+
+const road = document.getElementById("road");
+const rider = document.getElementById("rider");
+
+const scoreText = document.getElementById("score");
+const highScoreText = document.getElementById("highScore");
+const finalScoreText = document.getElementById("finalScore");
+
 const coinCount = document.getElementById("coinCount");
+const livesText = document.getElementById("lives");
+
+const startScreen = document.getElementById("startScreen");
+const gameOverScreen = document.getElementById("gameOver");
+
+const startBtn = document.getElementById("startBtn");
+const restartBtn = document.getElementById("restartBtn");
+
+const pauseBtn = document.getElementById("pauseBtn");
+const pauseText = document.getElementById("pauseText");
+
+const leftBtn = document.getElementById("leftBtn");
+const rightBtn = document.getElementById("rightBtn");
+
+
+/* =========================
+   GAME DATA
+========================= */
+
+let playing = false;
+let paused = false;
+
+let animationId = null;
+let lastTime = 0;
+
+let score = 0;
+let highScore =
+Number(localStorage.getItem("misiRiderTopScore")) || 0;
+
+let totalCoins = 0;
+
+let lives = 3;
+let fuel = 100;
+let speed = 5;
+
+let cars = [];
+let coins = [];
+let roadLines = [];
+
+let lane = 1;
+
+let spawnTimer = 0;
+let coinTimer = 0;
+
+let nextCoinTime = 2000 + Math.random() * 3000;
+
+
+/* =========================
+   LANE
+========================= */
+
+const lanePositions = [
+    20,
+    50,
+    80
+];
+
+
+/* =========================
+   AUDIO SETTING
+========================= */
 
 bgMusic.preload = "auto";
 
@@ -28,87 +102,13 @@ if (coinSound) {
 
 
 /* =========================
-   ELEMENT
+   INITIAL HUD
 ========================= */
-
-const road = document.getElementById("road");
-const rider = document.getElementById("rider");
-
-const scoreText = document.getElementById("score");
-const highScoreText = document.getElementById("highScore");
-const finalScoreText = document.getElementById("finalScore");
-
-const startScreen = document.getElementById("startScreen");
-const gameOverScreen = document.getElementById("gameOver");
-
-const startBtn = document.getElementById("startBtn");
-const restartBtn = document.getElementById("restartBtn");
-
-const leftBtn = document.getElementById("leftBtn");
-const rightBtn = document.getElementById("rightBtn");
-
-const pauseBtn = document.getElementById("pauseBtn");
-const pauseText = document.getElementById("pauseText");
-const livesText = document.getElementById("lives");
-
-
-/* =========================
-   GAME DATA
-========================= */
-
-let playing = false;
-let paused = false;
-
-let score = 0;
-let speed = 5;
-
-let cars = [];
-let coins = [];
-
-let totalCoins = 0;
-
-let lines = [];
-
-let lane = 1;
-
-let animationId = null;
-let lastTime = 0;
-
-let spawnTimer = 0;
-
-let coinTimer = 0;
-let nextCoinTime = 2000 + Math.random() * 3000;
-
-
-/* =========================
-   PLAYER
-========================= */
-
-let lives = 3;
-let fuel = 100;
-
-
-/* =========================
-   LANE
-========================= */
-
-const lanePositions = [
-
-    20,
-    50,
-    80
-
-];
-
-
-/* =========================
-   HIGH SCORE
-========================= */
-
-let highScore =
-Number(localStorage.getItem("misiRiderTopScore")) || 0;
 
 highScoreText.textContent = highScore;
+scoreText.textContent = 0;
+coinCount.textContent = 0;
+livesText.textContent = 3;
 /* =====================================================
    ROAD LINE
 ===================================================== */
@@ -122,16 +122,14 @@ function createRoadLines() {
         line1.dataset.y = y;
 
         road.appendChild(line1);
-
-        lines.push(line1);
+        roadLines.push(line1);
 
         const line2 = document.createElement("div");
         line2.className = "roadLine line2";
         line2.dataset.y = y;
 
         road.appendChild(line2);
-
-        lines.push(line2);
+        roadLines.push(line2);
 
     }
 
@@ -139,16 +137,14 @@ function createRoadLines() {
 
 function updateRoadLines(delta) {
 
-    lines.forEach(line => {
+    roadLines.forEach(line => {
 
         let y = Number(line.dataset.y);
 
         y += speed * (delta / 16);
 
         if (y > road.clientHeight) {
-
             y = -100;
-
         }
 
         line.dataset.y = y;
@@ -177,7 +173,6 @@ function moveLeft() {
     if (lane > 0) {
 
         lane--;
-
         updateRider();
 
     }
@@ -191,7 +186,6 @@ function moveRight() {
     if (lane < 2) {
 
         lane++;
-
         updateRider();
 
     }
@@ -208,12 +202,10 @@ function createCar() {
     const car = document.createElement("div");
 
     const colours = [
-
         "carRed",
         "carBlue",
         "carYellow",
         "carWhite"
-
     ];
 
     car.className =
@@ -226,6 +218,7 @@ function createCar() {
     car.dataset.y = -120;
 
     car.style.left = lanePositions[laneCar] + "%";
+    car.style.top = "-120px";
     car.style.transform = "translateX(-50%)";
 
     road.appendChild(car);
@@ -244,21 +237,17 @@ function createCoin() {
     const coin = document.createElement("div");
 
     coin.className = "coin";
-   
-const laneCoin = Math.floor(Math.random() * 3);
 
-coin.dataset.lane = laneCoin;
-coin.dataset.y = -80;
+    const laneCoin = Math.floor(Math.random() * 3);
 
-coin.style.left = lanePositions[laneCoin] + "%";
-coin.style.top = "-80px";
-coin.style.transform = "translateX(-50%)";
+    coin.dataset.lane = laneCoin;
+    coin.dataset.y = -80;
 
-console.log("Coin muncul");
+    coin.style.left = lanePositions[laneCoin] + "%";
+    coin.style.top = "-80px";
+    coin.style.transform = "translateX(-50%)";
 
     road.appendChild(coin);
-
-   console.log("Coin dicipta");
 
     coins.push(coin);
 
@@ -285,6 +274,29 @@ function collision(a, b) {
 
 
 /* =====================================================
+   UPDATE HUD
+===================================================== */
+
+function updateLives() {
+
+    livesText.textContent = lives;
+
+}
+
+function updateCoins() {
+
+    coinCount.textContent = totalCoins;
+
+}
+
+function updateScore() {
+
+    scoreText.textContent = score;
+
+}
+
+
+/* =====================================================
    START GAME
 ===================================================== */
 
@@ -300,15 +312,12 @@ function startGame() {
     coins.forEach(coin => coin.remove());
     coins = [];
 
-   score = 0;
-   totalCoins = 0;
-   speed = 5;
+    score = 0;
+    totalCoins = 0;
 
-   scoreText.textContent = score;
-   coinCount.textContent = totalCoins;
-
-    lives = 3;updateLives();
+    lives = 3;
     fuel = 100;
+    speed = 5;
 
     spawnTimer = 0;
     coinTimer = 0;
@@ -316,9 +325,10 @@ function startGame() {
 
     lane = 1;
 
+    updateScore();
+    updateCoins();
+    updateLives();
     updateRider();
-
-    scoreText.textContent = score;
 
     startScreen.classList.add("hidden");
     gameOverScreen.classList.add("hidden");
@@ -356,14 +366,18 @@ function endGame() {
 
     cancelAnimationFrame(animationId);
 
+    bgMusic.pause();
     engineSound.pause();
+
+    bgMusic.currentTime = 0;
     engineSound.currentTime = 0;
 
-    bgMusic.pause();
-    bgMusic.currentTime = 0;
+    if (crashSound) {
 
-    crashSound.currentTime = 0;
-    crashSound.play().catch(() => {});
+        crashSound.currentTime = 0;
+        crashSound.play().catch(() => {});
+
+    }
 
     finalScoreText.textContent = score;
 
@@ -383,8 +397,6 @@ function endGame() {
     gameOverScreen.classList.remove("hidden");
 
 }
-
-
 /* =====================================================
    GAME LOOP
 ===================================================== */
@@ -413,13 +425,20 @@ function gameLoop(time) {
 
     }
 
+    /* =========================
+       CREATE CAR
+    ========================= */
+
     if (spawnTimer >= 1200) {
 
         createCar();
-
         spawnTimer = 0;
 
     }
+
+    /* =========================
+       CREATE COIN
+    ========================= */
 
     if (coinTimer >= nextCoinTime) {
 
@@ -430,8 +449,9 @@ function gameLoop(time) {
         nextCoinTime = 2000 + Math.random() * 3000;
 
     }
-       /* =========================
-       CAR
+
+    /* =========================
+       UPDATE CAR
     ========================= */
 
     for (let i = cars.length - 1; i >= 0; i--) {
@@ -451,9 +471,8 @@ function gameLoop(time) {
             cars.splice(i, 1);
 
             lives--;
-           
             updateLives();
-           
+
             if (lives <= 0) {
 
                 endGame();
@@ -468,12 +487,10 @@ function gameLoop(time) {
         if (y > road.clientHeight + 120) {
 
             car.remove();
-
             cars.splice(i, 1);
 
             score += 10;
-
-            scoreText.textContent = score;
+            updateScore();
 
             speed = Math.min(10, 5 + score / 250);
 
@@ -481,9 +498,8 @@ function gameLoop(time) {
 
     }
 
-
     /* =========================
-       COIN
+       UPDATE COIN
     ========================= */
 
     for (let i = coins.length - 1; i >= 0; i--) {
@@ -496,29 +512,17 @@ function gameLoop(time) {
 
         coin.dataset.y = y;
         coin.style.top = y + "px";
-       console.log(
-    "Lane:", coin.dataset.lane,
-    "Left:", coin.style.left,
-    "Y:", y
-);
 
-        if (
-            Number(coin.dataset.lane) === lane &&
-            y > road.clientHeight - 180 &&
-            y < road.clientHeight - 40
+        if (collision(rider, coin)) {
 
-         console.log("MASUK COLLISION COIN");
+            score += 10;
+            totalCoins++;
 
-    score += 10;
-    totalCoins++;
+            fuel = Math.min(100, fuel + 10);
 
-     console.log(totalCoins);      
+            updateScore();
+            updateCoins();
 
-    fuel = Math.min(100, fuel + 10);
-           
-    scoreText.textContent = score;
-    coinCount.textContent = totalCoins;
-           
             if (coinSound) {
 
                 coinSound.currentTime = 0;
@@ -527,7 +531,6 @@ function gameLoop(time) {
             }
 
             coin.remove();
-
             coins.splice(i, 1);
 
             continue;
@@ -537,7 +540,6 @@ function gameLoop(time) {
         if (y > road.clientHeight + 80) {
 
             coin.remove();
-
             coins.splice(i, 1);
 
         }
@@ -555,17 +557,23 @@ function gameLoop(time) {
 document.addEventListener("keydown", (e) => {
 
     if (e.key === "ArrowLeft") {
+
         e.preventDefault();
         moveLeft();
+
     }
 
     if (e.key === "ArrowRight") {
+
         e.preventDefault();
         moveRight();
+
     }
 
     if (e.key === "Escape") {
+
         pauseBtn.click();
+
     }
 
 });
@@ -576,8 +584,11 @@ leftBtn.addEventListener("pointerdown", moveLeft);
 rightBtn.addEventListener("pointerdown", moveRight);
 
 
-// Start & Restart
+// Start
 startBtn.addEventListener("click", startGame);
+
+
+// Restart
 restartBtn.addEventListener("click", startGame);
 
 
@@ -625,9 +636,6 @@ pauseBtn.addEventListener("click", () => {
 
 createRoadLines();
 updateRider();
-function updateLives(){
-   
-  livesText.textContent = lives;
-
-
-}
+updateScore();
+updateCoins();
+updateLives();
