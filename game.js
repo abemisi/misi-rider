@@ -63,11 +63,13 @@ function gameLoop(time){
 
     updateRoad(delta);
 
-updateCars(delta);
+    updateCars(delta);
 
-updateCoins(delta);
+    updateCoins(delta);
 
-updateBuildings(delta);
+    updateBuildings(delta);
+
+    checkLevel();
 
 
 /* =========================
