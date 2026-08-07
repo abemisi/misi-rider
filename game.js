@@ -496,6 +496,11 @@ function gameLoop(time) {
 
         coin.dataset.y = y;
         coin.style.top = y + "px";
+       console.log(
+    "Lane:", coin.dataset.lane,
+    "Left:", coin.style.left,
+    "Y:", y
+);
 
         if (
             Number(coin.dataset.lane) === lane &&
