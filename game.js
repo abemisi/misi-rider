@@ -27,23 +27,22 @@ function startGame(){
 
     Game.playing = true;
     Game.paused = false;
-   
+
     setupAudio();
-
     playMusic();
-
     playEngine();
 
     resetGame();
     resetRoad();
     resetRider();
+
     clearCars();
     clearCoins();
     clearBuildings();
 
     Game.lastTime = performance.now();
 
-  Game.animationId = requestAnimationFrame(gameLoop);
+    Game.animationId = requestAnimationFrame(gameLoop);
 
 }
 
@@ -58,7 +57,7 @@ function gameLoop(time){
 
     if(Game.paused){
 
-        requestAnimationFrame(gameLoop);
+        Game.animationId = requestAnimationFrame(gameLoop);
         return;
 
     }
@@ -77,53 +76,51 @@ function gameLoop(time){
 
     checkLevel();
 
+    /* =========================
+       SPAWN CAR
+    ========================= */
 
-/* =========================
-   SPAWN CAR
-========================= */
+    Game.carTimer += delta;
 
-Game.carTimer += delta;
+    if(Game.carTimer >= Game.carSpawnDelay){
 
-if(Game.carTimer >= Game.carSpawnDelay){
+        createCar();
 
-    createCar();
+        Game.carTimer = 0;
 
-    Game.carTimer = 0;
+    }
+
+    /* =========================
+       SPAWN COIN
+    ========================= */
+
+    Game.coinTimer += delta;
+
+    if(Game.coinTimer >= Game.coinSpawnDelay){
+
+        createCoin();
+
+        Game.coinTimer = 0;
+
+    }
+
+    /* =========================
+       SPAWN BUILDING
+    ========================= */
+
+    Game.buildingTimer += delta;
+
+    if(Game.buildingTimer >= Game.buildingSpawnDelay){
+
+        createBuilding();
+
+        Game.buildingTimer = 0;
+
+    }
+
+    Game.animationId = requestAnimationFrame(gameLoop);
 
 }
-
-
-/* =========================
-   SPAWN COIN
-========================= */
-
-Game.coinTimer += delta;
-
-if(Game.coinTimer >= Game.coinSpawnDelay){
-
-    createCoin();
-
-    Game.coinTimer = 0;
-
-}
-
-
-/* =========================
-   SPAWN BUILDING
-========================= */
-
-Game.buildingTimer += delta;
-
-if(Game.buildingTimer >= Game.buildingSpawnDelay){
-
-    createBuilding();
-
-    Game.buildingTimer = 0;
-
-}
-
-
-Game.animationId = requestAnimationFrame(gameLoop);
 
 
 /* =====================================================
@@ -160,18 +157,18 @@ function gameOver(){
 
 if(Game.ui.startBtn){
 
-    Game.ui.startBtn.addEventListener("click",startGame);
+    Game.ui.startBtn.addEventListener("click", startGame);
 
 }
 
 if(Game.ui.restartBtn){
 
-    Game.ui.restartBtn.addEventListener("click",startGame);
+    Game.ui.restartBtn.addEventListener("click", startGame);
 
 }
 
 if(Game.ui.pauseBtn){
 
-    Game.ui.pauseBtn.addEventListener("click",pauseGame);
+    Game.ui.pauseBtn.addEventListener("click", pauseGame);
 
 }
