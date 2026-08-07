@@ -28,7 +28,7 @@ function startGame(){
 
     Game.lastTime = performance.now();
 
-    requestAnimationFrame(gameLoop);
+  Game.animationId = requestAnimationFrame(gameLoop);
 
 }
 
