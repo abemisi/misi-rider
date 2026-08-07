@@ -244,14 +244,14 @@ function createCoin() {
     const coin = document.createElement("div");
 
     coin.className = "coin";
+   
+const laneCoin = Math.floor(Math.random() * 3);
 
-    const laneCoin = Math.floor(Math.random() * 3);
+coin.dataset.lane = laneCoin;
+coin.dataset.y = -80;
 
-    coin.dataset.lane = laneCoin;
-    coin.dataset.y = -80;
-
-   coin.style.left = "50%";
-coin.style.top = "0px";
+coin.style.left = lanePositions[laneCoin] + "%";
+coin.style.top = "-80px";
 coin.style.transform = "translateX(-50%)";
 
 console.log("Coin muncul");
@@ -497,7 +497,11 @@ function gameLoop(time) {
         coin.dataset.y = y;
         coin.style.top = y + "px";
 
-        if (collision(rider, coin)) {
+        if (
+            Number(coin.dataset.lane) === lane &&
+            y > road.clientHeight - 180 &&
+            y < road.clientHeight - 40
+) {ollision(rider, coin)) {
 
          console.log("MASUK COLLISION COIN");
 
