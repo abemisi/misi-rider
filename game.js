@@ -1,1 +1,122 @@
+/* =====================================================
+   MISI RIDER V3.1
+   GAME.JS
+===================================================== */
 
+/* =====================================================
+   TIME
+===================================================== */
+
+Game.lastTime = 0;
+Game.carTimer = 0;
+Game.carSpawnDelay = 1200;
+
+
+/* =====================================================
+   START GAME
+===================================================== */
+
+function startGame(){
+
+    Game.playing = true;
+    Game.paused = false;
+
+    resetGame();
+    resetRoad();
+    resetRider();
+    clearCars();
+
+    Game.lastTime = performance.now();
+
+    requestAnimationFrame(gameLoop);
+
+}
+
+
+/* =====================================================
+   GAME LOOP
+===================================================== */
+
+function gameLoop(time){
+
+    if(!Game.playing) return;
+
+    if(Game.paused){
+
+        requestAnimationFrame(gameLoop);
+        return;
+
+    }
+
+    const delta = time - Game.lastTime;
+
+    Game.lastTime = time;
+
+    updateRoad(delta);
+
+    updateCars(delta);
+
+    /* -----------------------------
+       Spawn Kereta
+    ------------------------------ */
+
+    Game.carTimer += delta;
+
+    if(Game.carTimer >= Game.carSpawnDelay){
+
+        createCar();
+
+        Game.carTimer = 0;
+
+    }
+
+    requestAnimationFrame(gameLoop);
+
+}
+
+
+/* =====================================================
+   PAUSE
+===================================================== */
+
+function pauseGame(){
+
+    Game.paused = !Game.paused;
+
+}
+
+
+/* =====================================================
+   GAME OVER
+===================================================== */
+
+function gameOver(){
+
+    Game.playing = false;
+
+    cancelAnimationFrame(Game.animationId);
+
+}
+
+
+/* =====================================================
+   BUTTON
+===================================================== */
+
+if(Game.ui.startBtn){
+
+    Game.ui.startBtn.addEventListener("click",startGame);
+
+}
+
+if(Game.ui.restartBtn){
+
+    Game.ui.restartBtn.addEventListener("click",startGame);
+
+}
+
+if(Game.ui.pauseBtn){
+
+    Game.ui.pauseBtn.addEventListener("click",pauseGame);
+
+}
