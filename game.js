@@ -8,6 +8,7 @@
 ===================================================== */
 
 Game.lastTime = 0;
+
 Game.carTimer = 0;
 Game.carSpawnDelay = 1200;
 
