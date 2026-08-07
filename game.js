@@ -27,6 +27,12 @@ function startGame(){
 
     Game.playing = true;
     Game.paused = false;
+   
+    setupAudio();
+
+    playMusic();
+
+    playEngine();
 
     resetGame();
     resetRoad();
@@ -138,6 +144,10 @@ function pauseGame(){
 function gameOver(){
 
     Game.playing = false;
+
+    stopMusic();
+
+    stopEngine();
 
     cancelAnimationFrame(Game.animationId);
 
