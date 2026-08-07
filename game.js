@@ -63,25 +63,33 @@ function gameLoop(time){
 
     updateRoad(delta);
 
-    updateCars(delta);
-    updateCoins(delta);
-    updateBuildings(delta);
+updateCars(delta);
 
-    /* -----------------------------
-       Spawn Kereta
-    ------------------------------ */
+updateCoins(delta);
 
-    Game.carTimer += delta;
+updateBuildings(delta);
 
-    if(Game.carTimer >= Game.carSpawnDelay){
 
-        createCar();
+/* =========================
+   SPAWN CAR
+========================= */
 
-        Game.carTimer = 0;
+Game.carTimer += delta;
 
-    }
+if(Game.carTimer >= Game.carSpawnDelay){
 
-   Game.coinTimer += delta;
+    createCar();
+
+    Game.carTimer = 0;
+
+}
+
+
+/* =========================
+   SPAWN COIN
+========================= */
+
+Game.coinTimer += delta;
 
 if(Game.coinTimer >= Game.coinSpawnDelay){
 
@@ -91,7 +99,12 @@ if(Game.coinTimer >= Game.coinSpawnDelay){
 
 }
 
-   Game.buildingTimer += delta;
+
+/* =========================
+   SPAWN BUILDING
+========================= */
+
+Game.buildingTimer += delta;
 
 if(Game.buildingTimer >= Game.buildingSpawnDelay){
 
@@ -100,9 +113,9 @@ if(Game.buildingTimer >= Game.buildingSpawnDelay){
     Game.buildingTimer = 0;
 
 }
-    requestAnimationFrame(gameLoop);
 
-}
+
+Game.animationId = requestAnimationFrame(gameLoop);
 
 
 /* =====================================================
