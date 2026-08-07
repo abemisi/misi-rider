@@ -4,17 +4,23 @@
    BAHAGIAN 1
 ===================================================== */
 
+
 /* =====================================================
-   GAME TIMER
+   GAME VARIABLE
 ===================================================== */
+
+Game.playing = false;
+Game.paused = false;
 
 Game.lastTime = 0;
 
-Game.carTimer = 0;
-Game.carSpawnDelay = 1200;
+Game.score = 0;
+Game.level = 1;
 
+Game.speed = 6;
+
+Game.carTimer = 0;
 Game.buildingTimer = 0;
-Game.buildingSpawnDelay = 2500;
 
 
 /* =====================================================
@@ -28,12 +34,12 @@ function resetGame(){
 
     Game.speed = 6;
 
-    Game.playing = false;
-    Game.paused = false;
-
     Game.carTimer = 0;
     Game.coinTimer = 0;
     Game.buildingTimer = 0;
+
+    Game.playing = false;
+    Game.paused = false;
 
     Game.lastTime = 0;
 
@@ -55,19 +61,23 @@ function startGame(){
     resetRoad();
     resetRider();
 
-    Game.ui.startScreen.classList.add("hidden");
+    setupAudio();
+
+    playMusic();
+
+    playEngine();
+
+    if(Game.ui.startScreen){
+
+        Game.ui.startScreen.classList.add("hidden");
+
+    }
 
     if(Game.ui.gameOver){
 
         Game.ui.gameOver.classList.add("hidden");
 
     }
-
-    setupAudio();
-
-    playMusic();
-
-    playEngine();
 
     Game.playing = true;
 
@@ -84,11 +94,16 @@ function startGame(){
 
 function gameLoop(time){
 
-    if(!Game.playing) return;
+    if(!Game.playing){
+
+        return;
+
+    }
 
     if(Game.paused){
 
         requestAnimationFrame(gameLoop);
+
         return;
 
     }
@@ -99,10 +114,93 @@ function gameLoop(time){
 
     updateRoad(delta);
 
+    updateRider();
+
     updateCars(delta);
 
     updateCoins(delta);
 
     updateBuildings(delta);
 
-    checkLevel();
+    checkLevel();    /* =========================
+       SPAWN CAR
+    ========================= */
+
+    Game.carTimer += delta;
+
+    if(Game.carTimer >= Game.carSpawnDelay){
+
+        createCar();
+
+        Game.carTimer = 0;
+
+    }
+
+
+    /* =========================
+       SPAWN COIN
+    ========================= */
+
+    Game.coinTimer += delta;
+
+    if(Game.coinTimer >= Game.coinSpawnDelay){
+
+        createCoin();
+
+        Game.coinTimer = 0;
+
+    }
+
+
+    /* =========================
+       SPAWN BUILDING
+    ========================= */
+
+    Game.buildingTimer += delta;
+
+    if(Game.buildingTimer >= Game.buildingSpawnDelay){
+
+        createBuilding();
+
+        Game.buildingTimer = 0;
+
+    }
+
+
+    requestAnimationFrame(gameLoop);
+
+}
+
+
+/* =====================================================
+   PAUSE GAME
+===================================================== */
+
+function pauseGame(){
+
+    Game.paused = !Game.paused;
+
+}
+
+
+/* =====================================================
+   GAME OVER
+===================================================== */
+
+function gameOver(){
+
+    Game.playing = false;
+
+    stopMusic();
+
+    stopEngine();
+
+    playCrash();
+
+    if(Game.ui.gameOver){
+
+        Game.ui.gameOver.classList.remove("hidden");
+
+    }
+
+}
