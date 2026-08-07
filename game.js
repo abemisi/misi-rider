@@ -506,7 +506,6 @@ function gameLoop(time) {
             Number(coin.dataset.lane) === lane &&
             y > road.clientHeight - 180 &&
             y < road.clientHeight - 40
-) {ollision(rider, coin)) {
 
          console.log("MASUK COLLISION COIN");
 
