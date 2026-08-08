@@ -3,6 +3,7 @@
    CAR.JS
 ===================================================== */
 
+
 /* =====================================================
    CAR IMAGE
 ===================================================== */
@@ -69,6 +70,28 @@ function updateCars(delta){
 
         car.style.top = y + "px";
 
+
+        /* =============================================
+           COLLISION RIDER
+        ============================================= */
+
+        if(checkCarCollision(car)){
+
+            car.remove();
+
+            Game.cars.splice(i,1);
+
+            handleCarCrash();
+
+            continue;
+
+        }
+
+
+        /* =============================================
+           REMOVE CAR
+        ============================================= */
+
         if(y > Game.ui.road.clientHeight + 200){
 
             car.remove();
@@ -83,13 +106,112 @@ function updateCars(delta){
 
 
 /* =====================================================
+   CHECK CAR COLLISION
+===================================================== */
+
+function checkCarCollision(car){
+
+    if(!Game.rider){
+
+        return false;
+
+    }
+
+    const riderRect =
+        Game.rider.getBoundingClientRect();
+
+    const carRect =
+        car.getBoundingClientRect();
+
+
+    const paddingX = 8;
+    const paddingY = 10;
+
+
+    return (
+
+        riderRect.left + paddingX <
+        carRect.right - paddingX &&
+
+        riderRect.right - paddingX >
+        carRect.left + paddingX &&
+
+        riderRect.top + paddingY <
+        carRect.bottom - paddingY &&
+
+        riderRect.bottom - paddingY >
+        carRect.top + paddingY
+
+    );
+
+}
+
+
+/* =====================================================
+   HANDLE CAR CRASH
+===================================================== */
+
+function handleCarCrash(){
+
+    if(Game.crashed){
+
+        return;
+
+    }
+
+    Game.crashed = true;
+
+
+    /* =============================================
+       CRASH SOUND
+    ============================================= */
+
+    if(typeof playCrash === "function"){
+
+        playCrash();
+
+    }
+
+
+    /* =============================================
+       STOP ENGINE
+    ============================================= */
+
+    if(typeof stopEngine === "function"){
+
+        stopEngine();
+
+    }
+
+
+    /* =============================================
+       GAME OVER
+    ============================================= */
+
+    if(typeof gameOver === "function"){
+
+        gameOver();
+
+    }
+
+
+    setTimeout(()=>{
+
+        Game.crashed = false;
+
+    }, 500);
+
+}
+
+
+/* =====================================================
    REMOVE ALL CAR
 ===================================================== */
 
 function clearCars(){
 
-    Game.cars.forEach(car=>car.remove());
+    Game.cars.forEach(car => car.remove());
 
-    Game.cars=[];
+    Game.cars = [];
 
 }
