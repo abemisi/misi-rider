@@ -110,14 +110,17 @@ function startGame(){
     Game.playing = true;
     Game.paused = false;
 
-    Game.lastTime = performance.now();
+   Game.lastTime = performance.now();
 
+/* Kereta pertama terus muncul */
+createCar();
 
-    /* Mula loop */
+/* Coin pertama terus muncul */
+createCoin();
 
-    Game.animationId =
-        requestAnimationFrame(gameLoop);
-
+/* Mula loop */
+Game.animationId =
+    requestAnimationFrame(gameLoop);
 }/* =====================================================
    GAME LOOP
 ===================================================== */
