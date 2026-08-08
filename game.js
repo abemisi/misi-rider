@@ -65,10 +65,59 @@ function startGame(){
 
     /* Bersihkan objek lama */
 
-    clearCars();
-    clearCoins();
-    clearBuildings();
+    /* =========================
+   CLEAR OLD OBJECTS
+========================= */
 
+if(Game.cars){
+
+    Game.cars.forEach(function(car){
+
+        if(car){
+
+            car.remove();
+
+        }
+
+    });
+
+    Game.cars = [];
+
+}
+
+
+if(Game.coinsList){
+
+    Game.coinsList.forEach(function(coin){
+
+        if(coin){
+
+            coin.remove();
+
+        }
+
+    });
+
+    Game.coinsList = [];
+
+}
+
+
+if(Game.buildings){
+
+    Game.buildings.forEach(function(building){
+
+        if(building){
+
+            building.remove();
+
+        }
+
+    });
+
+    Game.buildings = [];
+
+}
 
     /* Reset posisi */
 
