@@ -204,3 +204,42 @@ function gameOver(){
     }
 
 }
+/* =====================================================
+   BUTTON CONTROL
+===================================================== */
+
+if(Game.ui.startBtn){
+
+    Game.ui.startBtn.addEventListener(
+        "click",
+        startGame
+    );
+
+}
+
+if(Game.ui.restartBtn){
+
+    Game.ui.restartBtn.addEventListener(
+        "click",
+        startGame
+    );
+
+}
+
+if(Game.ui.pauseBtn){
+
+    Game.ui.pauseBtn.addEventListener(
+        "click",
+        pauseGame
+    );
+
+}
+
+
+/* =====================================================
+   INITIAL RIDER
+===================================================== */
+
+Game.rider = Game.ui.rider;
+
+resetRider();
