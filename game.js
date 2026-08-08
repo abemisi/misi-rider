@@ -350,12 +350,49 @@ function gameOver(){
 function pauseGame(){
 
     if(!Game.playing){
-
         return;
-
     }
 
     Game.paused = !Game.paused;
+
+
+    /* =========================
+       PAUSE
+    ========================= */
+
+    if(Game.paused){
+
+        /* Papar PAUSED */
+
+        if(Game.ui.pauseScreen){
+            Game.ui.pauseScreen.classList.remove("hidden");
+        }
+
+
+        /* Hentikan muzik */
+
+        if(typeof pauseMusic === "function"){
+            pauseMusic();
+        }
+
+        return;
+    }
+
+
+    /* =========================
+       RESUME
+    ========================= */
+
+    if(Game.ui.pauseScreen){
+        Game.ui.pauseScreen.classList.add("hidden");
+    }
+
+
+    /* Sambung muzik */
+
+    if(typeof resumeMusic === "function"){
+        resumeMusic();
+    }
 
 }
 
