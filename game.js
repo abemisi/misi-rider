@@ -1,49 +1,33 @@
 /* =====================================================
    MISI RIDER V3.1
    GAME.JS
-   BAHAGIAN 1
+   BAHAGIAN 1 / 3
 ===================================================== */
 
 
 /* =====================================================
-   GAME VARIABLE
+   GAME TIMING
+===================================================== */
+
+Game.lastTime = 0;
+
+Game.carTimer = 0;
+Game.coinTimer = 0;
+Game.buildingTimer = 0;
+
+Game.carSpawnDelay = 1200;
+Game.coinSpawnDelay = 1800;
+Game.buildingSpawnDelay = 2500;
+
+
+/* =====================================================
+   GAME STATE
 ===================================================== */
 
 Game.playing = false;
 Game.paused = false;
 
-Game.lastTime = 0;
-
-Game.score = 0;
-Game.level = 1;
-
-Game.speed = 6;
-
-Game.carTimer = 0;
-Game.buildingTimer = 0;
-
-
-/* =====================================================
-   RESET GAME
-===================================================== */
-
-function resetGame(){
-
-    Game.score = 0;
-    Game.level = 1;
-
-    Game.speed = 6;
-
-    Game.carTimer = 0;
-    Game.coinTimer = 0;
-    Game.buildingTimer = 0;
-
-    Game.playing = false;
-    Game.paused = false;
-
-    Game.lastTime = 0;
-
-}
+Game.crashed = false;
 
 
 /* =====================================================
@@ -52,20 +36,61 @@ function resetGame(){
 
 function startGame(){
 
-    resetGame();
+    /* Hentikan animation lama */
+
+    if(Game.animationId){
+
+        cancelAnimationFrame(Game.animationId);
+
+    }
+
+
+    /* Reset data */
+
+    Game.score = 0;
+    Game.coins = 0;
+    Game.lives = 3;
+
+    Game.level = 1;
+    Game.speed = 6;
+
+    Game.lane = 1;
+
+    Game.carTimer = 0;
+    Game.coinTimer = 0;
+    Game.buildingTimer = 0;
+
+    Game.crashed = false;
+
+
+    /* Bersihkan objek lama */
 
     clearCars();
     clearCoins();
     clearBuildings();
 
+
+    /* Reset posisi */
+
     resetRoad();
     resetRider();
+
+
+    /* HUD */
+
+    updateHUD();
+
+
+    /* Audio */
 
     setupAudio();
 
     playMusic();
 
     playEngine();
+
+
+    /* Screen */
 
     if(Game.ui.startScreen){
 
@@ -79,16 +104,21 @@ function startGame(){
 
     }
 
+
+    /* Game mula */
+
     Game.playing = true;
+    Game.paused = false;
 
     Game.lastTime = performance.now();
 
-    requestAnimationFrame(gameLoop);
 
-}
+    /* Mula loop */
 
+    Game.animationId =
+        requestAnimationFrame(gameLoop);
 
-/* =====================================================
+}/* =====================================================
    GAME LOOP
 ===================================================== */
 
@@ -100,29 +130,80 @@ function gameLoop(time){
 
     }
 
+
+    /* =========================
+       PAUSE
+    ========================= */
+
     if(Game.paused){
 
-        requestAnimationFrame(gameLoop);
+        Game.animationId =
+            requestAnimationFrame(gameLoop);
 
         return;
 
     }
 
-    const delta = time - Game.lastTime;
+
+    /* =========================
+       DELTA TIME
+    ========================= */
+
+    let delta =
+        time - Game.lastTime;
+
+    if(delta > 50){
+
+        delta = 16;
+
+    }
 
     Game.lastTime = time;
 
+
+    /* =========================
+       ROAD
+    ========================= */
+
     updateRoad(delta);
+
+
+    /* =========================
+       RIDER
+    ========================= */
 
     updateRider();
 
+
+    /* =========================
+       CARS
+    ========================= */
+
     updateCars(delta);
+
+
+    /* =========================
+       COINS
+    ========================= */
 
     updateCoins(delta);
 
+
+    /* =========================
+       BUILDINGS
+    ========================= */
+
     updateBuildings(delta);
 
-    checkLevel();    /* =========================
+
+    /* =========================
+       LEVEL
+    ========================= */
+
+    checkLevel();
+
+
+    /* =========================
        SPAWN CAR
     ========================= */
 
@@ -167,7 +248,45 @@ function gameLoop(time){
     }
 
 
-    requestAnimationFrame(gameLoop);
+    /* =========================
+       HUD
+    ========================= */
+
+    updateHUD();
+
+
+    /* =========================
+       NEXT FRAME
+    ========================= */
+
+    Game.animationId =
+        requestAnimationFrame(gameLoop);
+
+}/* =====================================================
+   GAME OVER
+===================================================== */
+
+function gameOver(){
+
+    Game.playing = false;
+    Game.paused = false;
+
+    if(Game.animationId){
+
+        cancelAnimationFrame(Game.animationId);
+
+    }
+
+
+    stopMusic();
+    stopEngine();
+
+
+    if(Game.ui.gameOver){
+
+        Game.ui.gameOver.classList.remove("hidden");
+
+    }
 
 }
 
@@ -178,34 +297,19 @@ function gameLoop(time){
 
 function pauseGame(){
 
+    if(!Game.playing){
+
+        return;
+
+    }
+
     Game.paused = !Game.paused;
 
 }
 
 
 /* =====================================================
-   GAME OVER
-===================================================== */
-
-function gameOver(){
-
-    Game.playing = false;
-
-    stopMusic();
-
-    stopEngine();
-
-    playCrash();
-
-    if(Game.ui.gameOver){
-
-        Game.ui.gameOver.classList.remove("hidden");
-
-    }
-
-}
-/* =====================================================
-   BUTTON CONTROL
+   BUTTON EVENTS
 ===================================================== */
 
 if(Game.ui.startBtn){
@@ -217,6 +321,7 @@ if(Game.ui.startBtn){
 
 }
 
+
 if(Game.ui.restartBtn){
 
     Game.ui.restartBtn.addEventListener(
@@ -225,6 +330,7 @@ if(Game.ui.restartBtn){
     );
 
 }
+
 
 if(Game.ui.pauseBtn){
 
@@ -237,9 +343,40 @@ if(Game.ui.pauseBtn){
 
 
 /* =====================================================
+   KEYBOARD CONTROL
+===================================================== */
+
+document.addEventListener("keydown", function(event){
+
+    if(event.key === "Escape"){
+
+        pauseGame();
+
+    }
+
+});
+
+
+/* =====================================================
    INITIAL RIDER
 ===================================================== */
 
 Game.rider = Game.ui.rider;
 
-resetRider();
+
+/* =====================================================
+   INITIAL HUD
+===================================================== */
+
+if(typeof updateHUD === "function"){
+
+    updateHUD();
+
+}
+
+
+/* =====================================================
+   READY
+===================================================== */
+
+console.log("MISI RIDER V3.1 READY");
