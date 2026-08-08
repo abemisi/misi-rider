@@ -3,17 +3,43 @@
    ROAD.JS
 ===================================================== */
 
+Game.road = {
+    offset: 0
+};
+
+
 /* =====================================================
-   ROAD DATA
+   CREATE ROAD LINES
 ===================================================== */
 
-Game.road = {
+function createRoadLines(){
 
-    offset: 0,
+    const container = document.getElementById("lines");
 
-    speed: 6
+    if(!container) return;
 
-};
+    container.innerHTML = "";
+
+    for(let y = -100; y < 800; y += 150){
+
+        const lineLeft = document.createElement("div");
+
+        lineLeft.className = "roadLine line1";
+        lineLeft.dataset.y = y;
+
+        container.appendChild(lineLeft);
+
+
+        const lineRight = document.createElement("div");
+
+        lineRight.className = "roadLine line2";
+        lineRight.dataset.y = y;
+
+        container.appendChild(lineRight);
+
+    }
+
+}
 
 
 /* =====================================================
@@ -24,10 +50,29 @@ function updateRoad(delta){
 
     if(!Game.playing) return;
 
-    Game.road.offset += Game.speed * (delta / 16);
+    const container = document.getElementById("lines");
 
-    Game.ui.road.style.backgroundPositionY =
-        Game.road.offset + "px";
+    if(!container) return;
+
+    const lines = container.querySelectorAll(".roadLine");
+
+    lines.forEach(line => {
+
+        let y = Number(line.dataset.y);
+
+        y += Game.speed * (delta / 16);
+
+        if(y > Game.ui.road.clientHeight){
+
+            y = -100;
+
+        }
+
+        line.dataset.y = y;
+
+        line.style.top = y + "px";
+
+    });
 
 }
 
@@ -40,6 +85,6 @@ function resetRoad(){
 
     Game.road.offset = 0;
 
-    Game.ui.road.style.backgroundPositionY = "0px";
+    createRoadLines();
 
 }
