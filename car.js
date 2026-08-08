@@ -162,6 +162,69 @@ function handleCarCrash(){
     Game.crashed = true;
 
 
+    /* =========================
+       KURANGKAN NYAWA
+    ========================= */
+
+    Game.lives--;
+
+    if(Game.lives < 0){
+
+        Game.lives = 0;
+
+    }
+
+
+    /* =========================
+       UPDATE HUD
+    ========================= */
+
+    if(typeof updateHUD === "function"){
+
+        updateHUD();
+
+    }
+
+
+    /* =========================
+       CRASH SOUND
+    ========================= */
+
+    if(typeof playCrash === "function"){
+
+        playCrash();
+
+    }
+
+
+    /* =========================
+       GAME OVER HANYA BILA
+       NYAWA HABIS
+    ========================= */
+
+    if(Game.lives <= 0){
+
+        if(typeof gameOver === "function"){
+
+            gameOver();
+
+        }
+
+    }
+
+
+    /* =========================
+       RESET CRASH LOCK
+    ========================= */
+
+    setTimeout(function(){
+
+        Game.crashed = false;
+
+    }, 700);
+
+}
+
     /* =============================================
        CRASH SOUND
     ============================================= */
