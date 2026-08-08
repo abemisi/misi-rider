@@ -30,20 +30,37 @@ function createCar(){
 
     car.className = "car";
 
-    const lane = Math.floor(Math.random() * 3);
+
+    const lane =
+        Math.floor(Math.random() * 3);
+
 
     car.dataset.lane = lane;
     car.dataset.y = -160;
 
-    car.style.left = Game.lanePositions[lane] + "%";
-    car.style.top = "-160px";
-    car.style.transform = "translateX(-50%)";
 
-    const img = carImages[
-        Math.floor(Math.random() * carImages.length)
-    ];
+    car.style.left =
+        Game.lanePositions[lane] + "%";
 
-    car.style.backgroundImage = `url("${img}")`;
+    car.style.top =
+        "-160px";
+
+    car.style.transform =
+        "translateX(-50%)";
+
+
+    const img =
+        carImages[
+            Math.floor(
+                Math.random() *
+                carImages.length
+            )
+        ];
+
+
+    car.style.backgroundImage =
+        `url("${img}")`;
+
 
     Game.ui.road.appendChild(car);
 
@@ -58,28 +75,42 @@ function createCar(){
 
 function updateCars(delta){
 
-    for(let i = Game.cars.length - 1; i >= 0; i--){
+    for(
+        let i = Game.cars.length - 1;
+        i >= 0;
+        i--
+    ){
 
-        const car = Game.cars[i];
+        const car =
+            Game.cars[i];
 
-        let y = Number(car.dataset.y);
 
-        y += Game.speed * (delta / 16);
+        let y =
+            Number(car.dataset.y);
 
-        car.dataset.y = y;
 
-        car.style.top = y + "px";
+        y +=
+            Game.speed *
+            (delta / 16);
+
+
+        car.dataset.y =
+            y;
+
+
+        car.style.top =
+            y + "px";
 
 
         /* =============================================
-           COLLISION RIDER
+           COLLISION
         ============================================= */
 
         if(checkCarCollision(car)){
 
             car.remove();
 
-            Game.cars.splice(i,1);
+            Game.cars.splice(i, 1);
 
             handleCarCrash();
 
@@ -92,11 +123,14 @@ function updateCars(delta){
            REMOVE CAR
         ============================================= */
 
-        if(y > Game.ui.road.clientHeight + 200){
+        if(
+            y >
+            Game.ui.road.clientHeight + 200
+        ){
 
             car.remove();
 
-            Game.cars.splice(i,1);
+            Game.cars.splice(i, 1);
 
         }
 
@@ -117,8 +151,10 @@ function checkCarCollision(car){
 
     }
 
+
     const riderRect =
         Game.rider.getBoundingClientRect();
+
 
     const carRect =
         car.getBoundingClientRect();
@@ -153,11 +189,16 @@ function checkCarCollision(car){
 
 function handleCarCrash(){
 
+    /* =========================
+       PREVENT DOUBLE COLLISION
+    ========================= */
+
     if(Game.crashed){
 
         return;
 
     }
+
 
     Game.crashed = true;
 
@@ -166,7 +207,17 @@ function handleCarCrash(){
        KURANGKAN NYAWA
     ========================= */
 
+    if(
+        typeof Game.lives !== "number"
+    ){
+
+        Game.lives = 3;
+
+    }
+
+
     Game.lives--;
+
 
     if(Game.lives < 0){
 
@@ -179,7 +230,9 @@ function handleCarCrash(){
        UPDATE HUD
     ========================= */
 
-    if(typeof updateHUD === "function"){
+    if(
+        typeof updateHUD === "function"
+    ){
 
         updateHUD();
 
@@ -190,7 +243,9 @@ function handleCarCrash(){
        CRASH SOUND
     ========================= */
 
-    if(typeof playCrash === "function"){
+    if(
+        typeof playCrash === "function"
+    ){
 
         playCrash();
 
@@ -198,13 +253,15 @@ function handleCarCrash(){
 
 
     /* =========================
-       GAME OVER HANYA BILA
-       NYAWA HABIS
+       GAME OVER
+       HANYA BILA NYAWA HABIS
     ========================= */
 
     if(Game.lives <= 0){
 
-        if(typeof gameOver === "function"){
+        if(
+            typeof gameOver === "function"
+        ){
 
             gameOver();
 
@@ -214,7 +271,7 @@ function handleCarCrash(){
 
 
     /* =========================
-       RESET CRASH LOCK
+       CRASH LOCK
     ========================= */
 
     setTimeout(function(){
@@ -225,47 +282,6 @@ function handleCarCrash(){
 
 }
 
-    /* =============================================
-       CRASH SOUND
-    ============================================= */
-
-    if(typeof playCrash === "function"){
-
-        playCrash();
-
-    }
-
-
-    /* =============================================
-       STOP ENGINE
-    ============================================= */
-
-    if(typeof stopEngine === "function"){
-
-        stopEngine();
-
-    }
-
-
-    /* =============================================
-       GAME OVER
-    ============================================= */
-
-    if(typeof gameOver === "function"){
-
-        gameOver();
-
-    }
-
-
-    setTimeout(()=>{
-
-        Game.crashed = false;
-
-    }, 500);
-
-}
-
 
 /* =====================================================
    REMOVE ALL CAR
@@ -273,7 +289,12 @@ function handleCarCrash(){
 
 function clearCars(){
 
-    Game.cars.forEach(car => car.remove());
+    Game.cars.forEach(function(car){
+
+        car.remove();
+
+    });
+
 
     Game.cars = [];
 
