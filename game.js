@@ -1,33 +1,63 @@
 /* =====================================================
    MISI RIDER V3.1
    GAME.JS
-   BAHAGIAN 1 / 3
+   PAUSE + ESC VERSION
 ===================================================== */
 
 
 /* =====================================================
-   GAME TIMING
-===================================================== */
-
-Game.lastTime = 0;
-
-Game.carTimer = 0;
-Game.coinTimer = 0;
-Game.buildingTimer = 0;
-
-Game.carSpawnDelay = 1200;
-Game.coinSpawnDelay = 1800;
-Game.buildingSpawnDelay = 2500;
-
-
-/* =====================================================
-   GAME STATE
+   GAME VARIABLE
 ===================================================== */
 
 Game.playing = false;
 Game.paused = false;
 
-Game.crashed = false;
+Game.lastTime = 0;
+
+Game.score = 0;
+Game.level = 1;
+
+Game.speed = 6;
+
+Game.carTimer = 0;
+Game.buildingTimer = 0;
+
+
+/* =====================================================
+   PAUSE TEXT
+===================================================== */
+
+const pauseText =
+    document.getElementById("pauseText");
+
+
+/* =====================================================
+   RESET GAME
+===================================================== */
+
+function resetGame(){
+
+    Game.score = 0;
+    Game.level = 1;
+
+    Game.speed = 6;
+
+    Game.carTimer = 0;
+    Game.coinTimer = 0;
+    Game.buildingTimer = 0;
+
+    Game.playing = false;
+    Game.paused = false;
+
+    Game.lastTime = 0;
+
+    if(pauseText){
+
+        pauseText.classList.add("hidden");
+
+    }
+
+}
 
 
 /* =====================================================
@@ -36,101 +66,29 @@ Game.crashed = false;
 
 function startGame(){
 
-    /* Hentikan animation lama */
+    resetGame();
 
-    if(Game.animationId){
-
-        cancelAnimationFrame(Game.animationId);
-
-    }
-
-
-    /* Reset data */
-
-    Game.score = 0;
-    Game.coins = 0;
-    Game.lives = 3;
-
-    Game.level = 1;
-    Game.speed = 6;
-
-    Game.lane = 1;
-
-    Game.carTimer = 0;
-    Game.coinTimer = 0;
-    Game.buildingTimer = 0;
-
-    Game.crashed = false;
-
-
-    /* Bersihkan objek lama */
 
     /* =========================
-   CLEAR OLD OBJECTS
-========================= */
+       CLEAR OLD OBJECTS
+    ========================= */
 
-if(Game.cars){
-
-    Game.cars.forEach(function(car){
-
-        if(car){
-
-            car.remove();
-
-        }
-
-    });
-
-    Game.cars = [];
-
-}
+    clearCars();
+    clearCoins();
+    clearBuildings();
 
 
-if(Game.coinsList){
-
-    Game.coinsList.forEach(function(coin){
-
-        if(coin){
-
-            coin.remove();
-
-        }
-
-    });
-
-    Game.coinsList = [];
-
-}
-
-
-if(Game.buildings){
-
-    Game.buildings.forEach(function(building){
-
-        if(building){
-
-            building.remove();
-
-        }
-
-    });
-
-    Game.buildings = [];
-
-}
-
-    /* Reset posisi */
+    /* =========================
+       RESET WORLD
+    ========================= */
 
     resetRoad();
     resetRider();
 
 
-    /* HUD */
-
-    updateHUD();
-
-
-    /* Audio */
+    /* =========================
+       AUDIO
+    ========================= */
 
     setupAudio();
 
@@ -139,7 +97,9 @@ if(Game.buildings){
     playEngine();
 
 
-    /* Screen */
+    /* =========================
+       HIDE START / GAME OVER
+    ========================= */
 
     if(Game.ui.startScreen){
 
@@ -154,23 +114,35 @@ if(Game.buildings){
     }
 
 
-    /* Game mula */
+    /* =========================
+       HIDE PAUSE
+    ========================= */
+
+    if(pauseText){
+
+        pauseText.classList.add("hidden");
+
+    }
+
+
+    /* =========================
+       START
+    ========================= */
 
     Game.playing = true;
+
     Game.paused = false;
 
-   Game.lastTime = performance.now();
+    Game.lastTime =
+        performance.now();
 
-/* Kereta pertama terus muncul */
-createCar();
 
-/* Coin pertama terus muncul */
-createCoin();
-
-/* Mula loop */
-Game.animationId =
     requestAnimationFrame(gameLoop);
-}/* =====================================================
+
+}
+
+
+/* =====================================================
    GAME LOOP
 ===================================================== */
 
@@ -184,33 +156,25 @@ function gameLoop(time){
 
 
     /* =========================
-       PAUSE
+       PAUSED
+       GAME TIDAK BERGERAK
     ========================= */
 
     if(Game.paused){
 
-        Game.animationId =
-            requestAnimationFrame(gameLoop);
+        requestAnimationFrame(gameLoop);
 
         return;
 
     }
 
 
-    /* =========================
-       DELTA TIME
-    ========================= */
-
-    let delta =
+    const delta =
         time - Game.lastTime;
 
-    if(delta > 50){
 
-        delta = 16;
-
-    }
-
-    Game.lastTime = time;
+    Game.lastTime =
+        time;
 
 
     /* =========================
@@ -261,7 +225,11 @@ function gameLoop(time){
 
     Game.carTimer += delta;
 
-    if(Game.carTimer >= Game.carSpawnDelay){
+
+    if(
+        Game.carTimer >=
+        Game.carSpawnDelay
+    ){
 
         createCar();
 
@@ -276,7 +244,11 @@ function gameLoop(time){
 
     Game.coinTimer += delta;
 
-    if(Game.coinTimer >= Game.coinSpawnDelay){
+
+    if(
+        Game.coinTimer >=
+        Game.coinSpawnDelay
+    ){
 
         createCoin();
 
@@ -291,7 +263,11 @@ function gameLoop(time){
 
     Game.buildingTimer += delta;
 
-    if(Game.buildingTimer >= Game.buildingSpawnDelay){
+
+    if(
+        Game.buildingTimer >=
+        Game.buildingSpawnDelay
+    ){
 
         createBuilding();
 
@@ -301,38 +277,200 @@ function gameLoop(time){
 
 
     /* =========================
-       HUD
-    ========================= */
-
-    updateHUD();
-
-
-    /* =========================
        NEXT FRAME
     ========================= */
 
-    Game.animationId =
-        requestAnimationFrame(gameLoop);
+    requestAnimationFrame(gameLoop);
 
-}/* =====================================================
+}
+
+
+/* =====================================================
+   PAUSE GAME
+===================================================== */
+
+function pauseGame(){
+
+    /* Jangan pause kalau game belum bermula */
+
+    if(!Game.playing){
+
+        return;
+
+    }
+
+
+    /* =================================================
+       PAUSE
+    ================================================= */
+
+    if(!Game.paused){
+
+        Game.paused = true;
+
+
+        /* =========================
+           PAPAR MISI PAUSE
+        ========================= */
+
+        if(pauseText){
+
+            pauseText.classList.remove("hidden");
+
+        }
+
+
+        /* =========================
+           TUKAR BUTTON
+        ========================= */
+
+        if(Game.ui.pauseBtn){
+
+            Game.ui.pauseBtn.textContent = "▶";
+
+        }
+
+
+        /* =========================
+           PAUSE MUSIC
+        ========================= */
+
+        if(
+            Game.audio &&
+            Game.audio.bgMusic
+        ){
+
+            Game.audio.bgMusic.pause();
+
+        }
+
+
+        /* =========================
+           PAUSE ENGINE
+        ========================= */
+
+        if(
+            Game.audio &&
+            Game.audio.engine
+        ){
+
+            Game.audio.engine.pause();
+
+        }
+
+
+        return;
+
+    }
+
+
+    /* =================================================
+       RESUME
+    ================================================= */
+
+    Game.paused = false;
+
+
+    /* =========================
+       HIDE PAUSE TEXT
+    ========================= */
+
+    if(pauseText){
+
+        pauseText.classList.add("hidden");
+
+    }
+
+
+    /* =========================
+       TUKAR BUTTON
+    ========================= */
+
+    if(Game.ui.pauseBtn){
+
+        Game.ui.pauseBtn.textContent = "⏸";
+
+    }
+
+
+    /* =========================
+       RESUME MUSIC
+    ========================= */
+
+    if(
+        Game.audio &&
+        Game.audio.bgMusic
+    ){
+
+        Game.audio.bgMusic
+            .play()
+            .catch(function(){});
+
+    }
+
+
+    /* =========================
+       RESUME ENGINE
+    ========================= */
+
+    if(
+        Game.audio &&
+        Game.audio.engine
+    ){
+
+        Game.audio.engine
+            .play()
+            .catch(function(){});
+
+    }
+
+
+    /* =========================
+       RESET TIMER
+    ========================= */
+
+    Game.lastTime =
+        performance.now();
+
+}
+
+
+/* =====================================================
    GAME OVER
 ===================================================== */
 
 function gameOver(){
 
     Game.playing = false;
+
     Game.paused = false;
 
-    if(Game.animationId){
 
-        cancelAnimationFrame(Game.animationId);
+    /* =========================
+       HIDE PAUSE
+    ========================= */
+
+    if(pauseText){
+
+        pauseText.classList.add("hidden");
 
     }
 
 
+    /* =========================
+       STOP AUDIO
+    ========================= */
+
     stopMusic();
+
     stopEngine();
 
+    playCrash();
+
+
+    /* =========================
+       SHOW GAME OVER
+    ========================= */
 
     if(Game.ui.gameOver){
 
@@ -344,61 +482,7 @@ function gameOver(){
 
 
 /* =====================================================
-   PAUSE GAME
-===================================================== */
-
-function pauseGame(){
-
-    if(!Game.playing){
-        return;
-    }
-
-    Game.paused = !Game.paused;
-
-
-    /* =========================
-       PAUSE
-    ========================= */
-
-    if(Game.paused){
-
-        /* Papar PAUSED */
-
-        if(Game.ui.pauseScreen){
-            Game.ui.pauseScreen.classList.remove("hidden");
-        }
-
-
-        /* Hentikan muzik */
-
-        if(typeof pauseMusic === "function"){
-            pauseMusic();
-        }
-
-        return;
-    }
-
-
-    /* =========================
-       RESUME
-    ========================= */
-
-    if(Game.ui.pauseScreen){
-        Game.ui.pauseScreen.classList.add("hidden");
-    }
-
-
-    /* Sambung muzik */
-
-    if(typeof resumeMusic === "function"){
-        resumeMusic();
-    }
-
-}
-
-
-/* =====================================================
-   BUTTON EVENTS
+   BUTTON CONTROL
 ===================================================== */
 
 if(Game.ui.startBtn){
@@ -432,40 +516,40 @@ if(Game.ui.pauseBtn){
 
 
 /* =====================================================
-   KEYBOARD CONTROL
+   ESC KEY
 ===================================================== */
 
-document.addEventListener("keydown", function(event){
+document.addEventListener(
+    "keydown",
+    function(e){
 
-    if(event.key === "Escape"){
+        if(e.key === "Escape"){
 
-        pauseGame();
+            e.preventDefault();
+
+            pauseGame();
+
+        }
 
     }
-
-});
+);
 
 
 /* =====================================================
    INITIAL RIDER
 ===================================================== */
 
-Game.rider = Game.ui.rider;
+Game.rider =
+    Game.ui.rider;
 
 
-/* =====================================================
-   INITIAL HUD
-===================================================== */
-
-if(typeof updateHUD === "function"){
-
-    updateHUD();
-
-}
+resetRider();
 
 
 /* =====================================================
    READY
 ===================================================== */
 
-console.log("MISI RIDER V3.1 READY");
+console.log(
+    "MISI RIDER V3.1 READY"
+);
